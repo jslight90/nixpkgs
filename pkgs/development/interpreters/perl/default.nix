@@ -151,11 +151,11 @@ let
       platforms = platforms.all;
     };
   } // stdenv.lib.optionalAttrs (stdenv.buildPlatform != stdenv.hostPlatform) rec {
-    crossVersion = "1.2";
+    crossVersion = "276849e62f472c1b241d9e7b38a28e4cc9f98563"; # Dez 02, 2018
 
     perl-cross-src = fetchurlBoot {
-      url = "https://github.com/arsv/perl-cross/releases/download/${crossVersion}/perl-cross-${crossVersion}.tar.gz";
-      sha256 = "02cic7lk91hgmsg8klkm2kv88m2a8y22m4m8gl4ydxbap2z7g42r";
+      url = "https://github.com/arsv/perl-cross/archive/${crossVersion}.tar.gz";
+      sha256 = "1fpr1m9lgkwdp1vmdr0s6gvmcpd0m8q6jwn024bkczc2h37bdynd";
     };
 
     depsBuildBuild = [ buildPackages.stdenv.cc makeWrapper ];
