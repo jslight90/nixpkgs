@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
     sha256 = "0vz4dlrvy4vc6l7w0a7n668pfa0rdm73wr2gar58wqranyah46yr";
   };
 
-  nativeBuildInputs = [ gettext LocaleGettext ];
+  nativeBuildInputs = [ perl gettext LocaleGettext ];
   buildInputs = [ perl LocaleGettext ];
 
   doCheck = false;                                # target `check' is missing
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
   # We don't use makeWrapper here because it uses substitutions our
   # bootstrap shell can't handle.
   postInstall = ''
-    gettext_perl="$(echo ${LocaleGettext}/lib/perl*/site_perl)"
+    gettext_perl="$(echo ${LocaleGettext}/${perl.libPrefix})"
     mv $out/bin/help2man $out/bin/.help2man-wrapped
     cat > $out/bin/help2man <<EOF
     #! $SHELL -e
