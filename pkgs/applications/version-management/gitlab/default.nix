@@ -38,7 +38,10 @@ stdenv.mkDerivation rec {
     rubyEnv rubyEnv.wrappedRuby rubyEnv.bundler tzdata git procps nettools
   ];
 
-  patches = [ ./remove-hardcoded-locations.patch ];
+  patches = [
+    ./remove-hardcoded-locations.patch
+    ./junit-comparison.patch
+  ];
 
   postPatch = ''
     # For reasons I don't understand "bundle exec" ignores the

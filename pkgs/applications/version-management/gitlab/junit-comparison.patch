@@ -1,0 +1,13 @@
+diff --git a/app/models/merge_request.rb b/app/models/merge_request.rb
+index 237b01636fb..425c16b59c3 100644
+--- a/app/models/merge_request.rb
++++ b/app/models/merge_request.rb
+@@ -1302,7 +1302,7 @@ class MergeRequest < ActiveRecord::Base
+   def base_pipeline
+     @base_pipeline ||= project.ci_pipelines
+       .order(id: :desc)
+-      .find_by(sha: diff_base_sha)
++      .find_by(sha: diff_base_sha, ref: target_branch)
+   end
+ 
+   def discussions_rendered_on_frontend?
