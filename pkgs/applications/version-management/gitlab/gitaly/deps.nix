@@ -285,7 +285,7 @@
       type = "git";
       url = "https://github.com/libgit2/git2go";
       rev = "ecaeb7a21d47";
-      sha256 = "1sh30jnzjag7ddhr4if65j8vpcpj4rw93sf1g033jf91flrzyx23";
+      sha256 = "14r7ryff93r49g94f6kg66xc0y6rwb31lj22s3qmzmlgywk0pgvr";
     };
   }
   {
