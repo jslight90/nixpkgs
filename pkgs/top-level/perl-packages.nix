@@ -7875,6 +7875,10 @@ let
       url = "mirror://cpan/authors/id/T/TO/TODDR/${name}.tar.gz";
       sha256 = "0399anjy3bc0w8xzsc3qx5vcyqryc9gc52lc7wh7i49hsdq8gvx2";
     };
+    # support cross-compilation by avoiding using `has_module` which does not work in miniperl (it requires B native module)
+    postPatch = stdenv.lib.optionalString (stdenv.buildPlatform != stdenv.hostPlatform) ''
+      substituteInPlace Makefile.PL --replace 'use IO::File;' '#'
+    '';
     doCheck = !stdenv.isDarwin;  # openpty fails in the sandbox
   };
 
