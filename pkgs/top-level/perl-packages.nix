@@ -5,7 +5,8 @@
    for each package in a separate file: the call to the function would
    be almost as much code as the function itself. */
 
-{config, pkgs, fetchurl, fetchFromGitHub, stdenv, gnused, perl, overrides, buildPackages}:
+{config, pkgs, fetchurl, fetchFromGitHub, stdenv, gnused, perl, overrides,
+  buildPackages}:
 
 # cpan2nix assumes that perl-packages.nix will be used only with perl 5.28.1 or above
 assert stdenv.lib.versionAtLeast perl.version "5.28.1";

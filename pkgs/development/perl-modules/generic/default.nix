@@ -1,4 +1,4 @@
-{ lib, stdenv, perl, toPerlModule, buildPackages }:
+{ lib, stdenv, perl, buildPackages, toPerlModule }:
 
 { nativeBuildInputs ? [], name, ... } @ attrs:
 
