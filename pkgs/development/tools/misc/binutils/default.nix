@@ -3,7 +3,7 @@
 # Enabling all targets increases output size to a multiple.
 , withAllTargets ? false, libbfd, libopcodes
 , enableShared ? true
-, noSysDirs, gold ? true, bison ? null
+, noSysDirs, gold ? false, bison ? null
 }:
 
 let
