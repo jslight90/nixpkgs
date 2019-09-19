@@ -1,9 +1,9 @@
-{ stdenv, fetchurl, fetchFromGitHub, buildGoPackage, buildEnv }:
+{ stdenv, fetchurl, fetchFromGitHub, buildGo112Package, buildEnv }:
 
 let
   version = "5.15.0";
 
-  mattermost-server = buildGoPackage rec {
+  mattermost-server = buildGo112Package rec {
     pname = "mattermost-server";
     inherit version;
 
