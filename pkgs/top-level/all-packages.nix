@@ -11717,6 +11717,8 @@ in
   libkrb5 = krb5.override { type = "lib"; };
   kerberos = libkrb5; # TODO: move to aliases.nix
 
+  kstars = libsForQt5.callPackage ../applications/science/astronomy/kstars { };
+
   l-smash = callPackage ../development/libraries/l-smash {
     stdenv = gccStdenv;
   };
