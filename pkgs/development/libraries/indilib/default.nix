@@ -110,7 +110,7 @@ let
     indi-qhy = [ libs.libqhy ];
     indi-qsi = [ libs.libqsi ];
     # indi-rtlsdr = [];
-    indi-sbig = [ libs.libsbig ];
+    # indi-sbig = [ libs.libsbig ];
     indi-shelyak = [];
     indi-spectracyber = [];
     indi-ssag = [];
