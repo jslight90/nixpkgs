@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 68e4e253..25f3c716 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -77,9 +77,9 @@
+ ## the following are directories where stuff will be installed to
+ set(INCLUDE_INSTALL_DIR      "${CMAKE_INSTALL_PREFIX}/include/")
+ set(PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_LIBDIR}/pkgconfig/")
+-set(UDEVRULES_INSTALL_DIR "/lib/udev/rules.d" CACHE STRING "Base directory for udev rules")
+-
+-set(PKG_CONFIG_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
++set(UDEVRULES_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/udev/rules.d" CACHE STRING "Base directory for udev rules")
++
++set(PKG_CONFIG_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+ 
+ #####################################  Build Options  ##############################################
+ # Select which components to build and what options to apply
+diff --git a/libs/indibase/alignment/CMakeLists.txt b/libs/indibase/alignment/CMakeLists.txt
+index 68e4e253..25f3c716 100644
+--- a/libs/indibase/alignment/CMakeLists.txt
++++ b/libs/indibase/alignment/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-set(INDI_MATH_PLUGINS_DIRECTORY "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/indi/MathPlugins")
++set(INDI_MATH_PLUGINS_DIRECTORY "${CMAKE_INSTALL_LIBDIR}/indi/MathPlugins")
+ set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS INDI_MATH_PLUGINS_DIRECTORY="${INDI_MATH_PLUGINS_DIRECTORY}")
+ 
+ option(ALIGNMENT_CONVEX_HULL_DEBUGGING "Alignment subsystem - additional debugging output" OFF)

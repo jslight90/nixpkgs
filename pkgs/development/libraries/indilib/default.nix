@@ -1,23 +1,130 @@
-{ stdenv, fetchurl, cmake, cfitsio, libusb, zlib, boost, libnova
-, curl, libjpeg, gsl }:
+{ stdenv, fetchFromGitHub, pkgs, lib }:
 
-stdenv.mkDerivation {
-  name = "indilib-1.1.0";
+let
 
-  src = fetchurl {
-    url = mirror://sourceforge/indi/libindi_1.1.0.tar.gz;
-    sha256 = "1bs6lkwqd4aashg93mqqkc7nrg7fbx9mdw85qs5263jqa6sr780w";
+  version = "1.8.1";
+  name = "indilib-${version}";
+
+  src = fetchFromGitHub {
+    owner  = "indilib";
+    repo   = "indi";
+    rev    = "v${version}";
+    sha256 = "0lw44zjfwvxbbg47mw0bam834bzifn7dmvspf1injfwrsi1xvbzc";
   };
 
-  patches = [ ./udev-dir.patch ] ;
+  patched = pkgs.runCommand "source" {
+    inherit src;
+    patches = [ ./libs.patch ./drivers.patch ];
+  } ''
+    cp -r $src $out
+    chmod -R +w $out
+    for p in $patches
+    do
+      patch -d $out/3rdparty -p1 < "$p"
+    done
+  '';
 
-  buildInputs = [ curl cmake cfitsio libusb zlib boost
-                            libnova libjpeg gsl ];
+  nativeBuildInputs = with pkgs; [
+    cmake curl
+  ];
 
-  meta = {
-    homepage = https://www.indilib.org/;
-    license = stdenv.lib.licenses.lgpl2Plus;
-    description = "Implementaion of the INDI protocol for POSIX operating systems";
-    platforms = stdenv.lib.platforms.unix;
+  buildInputs = with pkgs; [
+    cfitsio zlib boost fftw gsl pkgconfig
+    libusb libnova libjpeg libtiff
+  ];
+
+  indilib = stdenv.mkDerivation {
+    inherit name version src nativeBuildInputs buildInputs;
+    patches = [ ./indilib.patch ];
+    sourceRoot = "source/libindi";
+    meta = {
+      homepage = https://www.indilib.org/;
+      license = stdenv.lib.licenses.lgpl2Plus;
+      description = "Implementaion of the INDI protocol for POSIX operating systems";
+      platforms = stdenv.lib.platforms.unix;
+    };
   };
+
+  mkDriverLib = libName: extraBuildInputs: stdenv.mkDerivation {
+    name = "${name}-${libName}";
+    inherit version nativeBuildInputs;
+    src = patched;
+    sourceRoot = "source/3rdparty/${libName}";
+    buildInputs = buildInputs ++ extraBuildInputs;
+  };
+
+  mkDriver = driverName: extraBuildInputs: stdenv.mkDerivation {
+    name = "${name}-${driverName}";
+    inherit version nativeBuildInputs;
+    src = patched;
+    sourceRoot = "source/3rdparty/${driverName}";
+    buildInputs = buildInputs ++ extraBuildInputs ++ [ indilib ];
+    cmakeFlags = [
+      "-DINDI_DATA_DIR=$CMAKE_INSTALL_PREFIX/share/indi"
+    ];
+  };
+
+  libs = lib.mapAttrs mkDriverLib (with pkgs; {
+    libaltaircam = [];
+    libapogee = [];
+    libatik = [];
+    libfishcamp = [];
+    libfli = [];
+    libinovasdk = [];
+    libnncam = [];
+    libqhy = [];
+    libqsi = [ libftdi1 ];
+    libsbig = [];
+    libstarshootg = [];
+    libtoupcam = [];
+  });
+
+  drivers = lib.mapAttrs mkDriver (with pkgs; {
+    indi-aagcloudwatcher = [];
+    indi-apogee = [ libs.libapogee ];
+    indi-armadillo-platypus = [];
+    indi-asi = [];
+    indi-astromechfoc = [];
+    # indi-atik = [ libs.libatik ];
+    indi-avalon = [];
+    indi-beefocus = [];
+    indi-dreamfocuser = [];
+    indi-dsi = [];
+    indi-duino = [];
+    indi-eqmod = [];
+    indi-ffmv = [ libdc1394 ];
+    indi-fishcamp = [ libs.libfishcamp ];
+    indi-fli = [ libs.libfli ];
+    # indi-gige = [];
+    indi-gphoto = [ libgphoto2 libraw ];
+    indi-gpsd = [ gpsd ];
+    indi-gpsnmea = [];
+    indi-inovaplx = [ libs.libinovasdk ];
+    # indi-limesdr = [];
+    indi-maxdomeii = [];
+    indi-mgen = [ libftdi1 ];
+    indi-mi = [];
+    indi-nexdome = [];
+    indi-nexstarevo = [];
+    indi-nightscape = [ libftdi1 ];
+    indi-qhy = [ libs.libqhy ];
+    indi-qsi = [ libs.libqsi ];
+    # indi-rtlsdr = [];
+    indi-sbig = [ libs.libsbig ];
+    indi-shelyak = [];
+    indi-spectracyber = [];
+    indi-ssag = [];
+    indi-starbook = [];
+    indi-sx = [];
+    indi-talon6 = [];
+    indi-toupbase = with libs; [ libaltaircam libnncam libstarshootg libtoupcam ];
+    # indi-webcam = [];
+  });
+
+in pkgs.buildEnv {
+
+  inherit name;
+
+  paths = [ indilib ] ++ (lib.attrValues drivers);
+
 }
