@@ -121,10 +121,17 @@ let
     # indi-webcam = [];
   });
 
-in pkgs.buildEnv {
+in pkgs.symlinkJoin {
 
   inherit name;
 
   paths = [ indilib ] ++ (lib.attrValues drivers);
+
+  buildInputs = with pkgs; [ makeWrapper ];
+
+  postBuild = ''
+    wrapProgram "$out/bin/indiserver" \
+      --prefix INDIPREFIX : "$out"
+  '';
 
 }
