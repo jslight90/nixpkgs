@@ -12,25 +12,23 @@ let
     sha256 = "0lw44zjfwvxbbg47mw0bam834bzifn7dmvspf1injfwrsi1xvbzc";
   };
 
-  patched = pkgs.runCommand "source" {
-    inherit src;
-    patches = [ ./libs.patch ./drivers.patch ];
-  } ''
-    cp -r $src $out
-    chmod -R +w $out
-    for p in $patches
-    do
-      echo
-      echo "Applying patch: $p"
-      patch -d $out/3rdparty -p1 < "$p"
-    done
-  '';
-
   postPatch = ''
-    for f in ./*.rules;
+    for f in $(find . -name "CMakeLists.txt")
+    do
+      echo "Patching cmake list: $f"
+      sed -e 's@CMAKE_INSTALL_PREFIX}/''${CMAKE_INSTALL_@CMAKE_INSTALL_@g' \
+          -e 's@"/lib@"''${CMAKE_INSTALL_PREFIX}/lib@g' \
+          -e 's@"/etc@"''${CMAKE_INSTALL_PREFIX}/etc@g' \
+          -i $f
+    done
+
+    for f in $(find . -name "*.rules")
     do
       echo "Patching udev rules: $f"
       sed -e 's@/sbin/fxload@${pkgs.fxload}/sbin/fxload@g' \
+          -e 's@/bin/sh@${pkgs.bashInteractive}/bin/sh@g' \
+          -e 's@/bin/sleep@${pkgs.coreutils}/bin/sleep@g' \
+          -e 's@/bin/echo@${pkgs.coreutils}/bin/echo@g' \
           -e 's@ /lib/@ ''${out}/lib/@g' \
           -e 's@ /etc/@ ''${out}/etc/@g' \
           -i $f
@@ -47,8 +45,7 @@ let
   ];
 
   indilib = stdenv.mkDerivation {
-    inherit name version src nativeBuildInputs buildInputs;
-    patches = [ ./indilib.patch ];
+    inherit name version src nativeBuildInputs buildInputs postPatch;
     sourceRoot = "source/libindi";
     meta = {
       homepage = https://www.indilib.org/;
@@ -60,16 +57,14 @@ let
 
   mkDriverLib = libName: extraBuildInputs: stdenv.mkDerivation {
     name = "${name}-${libName}";
-    inherit version nativeBuildInputs postPatch;
-    src = patched;
+    inherit version src nativeBuildInputs postPatch;
     sourceRoot = "source/3rdparty/${libName}";
     buildInputs = buildInputs ++ extraBuildInputs;
   };
 
   mkDriver = driverName: extraBuildInputs: stdenv.mkDerivation {
     name = "${name}-${driverName}";
-    inherit version nativeBuildInputs postPatch;
-    src = patched;
+    inherit version src nativeBuildInputs postPatch;
     sourceRoot = "source/3rdparty/${driverName}";
     buildInputs = buildInputs ++ extraBuildInputs ++ [ indilib ];
     cmakeFlags = [
