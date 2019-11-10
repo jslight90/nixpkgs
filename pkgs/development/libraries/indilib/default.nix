@@ -20,7 +20,20 @@ let
     chmod -R +w $out
     for p in $patches
     do
+      echo
+      echo "Applying patch: $p"
       patch -d $out/3rdparty -p1 < "$p"
+    done
+  '';
+
+  postPatch = ''
+    for f in ./*.rules;
+    do
+      echo "Patching udev rules: $f"
+      sed -e 's@/sbin/fxload@${pkgs.fxload}/sbin/fxload@g' \
+          -e 's@ /lib/@ ''${out}/lib/@g' \
+          -e 's@ /etc/@ ''${out}/etc/@g' \
+          -i $f
     done
   '';
 
@@ -47,7 +60,7 @@ let
 
   mkDriverLib = libName: extraBuildInputs: stdenv.mkDerivation {
     name = "${name}-${libName}";
-    inherit version nativeBuildInputs;
+    inherit version nativeBuildInputs postPatch;
     src = patched;
     sourceRoot = "source/3rdparty/${libName}";
     buildInputs = buildInputs ++ extraBuildInputs;
@@ -55,7 +68,7 @@ let
 
   mkDriver = driverName: extraBuildInputs: stdenv.mkDerivation {
     name = "${name}-${driverName}";
-    inherit version nativeBuildInputs;
+    inherit version nativeBuildInputs postPatch;
     src = patched;
     sourceRoot = "source/3rdparty/${driverName}";
     buildInputs = buildInputs ++ extraBuildInputs ++ [ indilib ];
@@ -125,7 +138,7 @@ in pkgs.symlinkJoin {
 
   inherit name;
 
-  paths = [ indilib ] ++ (lib.attrValues drivers);
+  paths = [ indilib ] ++ (lib.attrValues libs) ++ (lib.attrValues drivers);
 
   buildInputs = with pkgs; [ makeWrapper ];
 
