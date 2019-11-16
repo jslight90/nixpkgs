@@ -13,7 +13,8 @@ mkDerivation rec {
   nativeBuildInputs = with pkgs; [ cmake extra-cmake-modules wrapQtAppsHook ];
 
   buildInputs = (with pkgs; [
-    cfitsio zlib gettext wcslib gsl libnova libraw libsecret eigen qtbase indilib
+    cfitsio zlib gettext wcslib gsl libnova libraw libsecret eigen qtbase
+    indilib astrometry_net
   ]) ++ (with pkgs.qt5; [
     # libqt5svg5 libqt5websockets5 qt5keychain
     qtdeclarative qtsvg qtwebsockets

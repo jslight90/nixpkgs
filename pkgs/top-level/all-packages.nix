@@ -10517,6 +10517,8 @@ in
     aspell = aspell.override { searchNixProfiles = false; };
   };
 
+  astrometry_net = callPackage ../applications/science/astronomy/astrometry.net {};
+
   attica = callPackage ../development/libraries/attica { };
 
   attr = callPackage ../development/libraries/attr { };
