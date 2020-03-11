@@ -181,11 +181,11 @@ in
         '' + lib.optionalString (!cfg.mutableConfig) ''
           rm -f ${cfg.statePath}/config/config.json
           cp ${mattermostConfJSON} ${cfg.statePath}/config/config.json
-          ${pkgs.mattermost}/bin/mattermost config migrate ${cfg.statePath}/config/config.json ${database}
         '' + lib.optionalString cfg.mutableConfig ''
           if ! test -e "${cfg.statePath}/config/.initial-created"; then
             rm -f ${cfg.statePath}/config/config.json
             cp ${mattermostConfJSON} ${cfg.statePath}/config/config.json
+            ${pkgs.mattermost}/bin/mattermost config migrate ${cfg.statePath}/config/config.json ${database}
             touch ${cfg.statePath}/config/.initial-created
           fi
         '' + lib.optionalString cfg.localDatabaseCreate ''
@@ -208,7 +208,7 @@ in
           User = cfg.user;
           Group = cfg.group;
           ExecStart = "${pkgs.mattermost}/bin/mattermost" +
-            (lib.optionalString (!cfg.mutableConfig) " -c ${database}");
+            (lib.optionalString (cfg.mutableConfig) " -c ${database}");
           WorkingDirectory = "${cfg.statePath}";
           Restart = "always";
           RestartSec = "10";
