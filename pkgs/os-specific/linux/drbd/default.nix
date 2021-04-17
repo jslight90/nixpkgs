@@ -8,14 +8,13 @@ stdenv.mkDerivation rec {
     sha256 = "1w4889h1ak7gy9w33kd4fgjlfpgmp6hzfya16p1pkc13bjf22mm0";
   };
 
-  patches = [ ./pass-force.patch ./fix-glibc-compilation.patch ];
+  patches = [ ./pass-force.patch ./fix-glibc-compilation.patch ./fix-pacemaker.patch ];
 
   nativeBuildInputs = [ flex ];
   buildInputs = [ perl ];
 
   configureFlags = [
     "--without-distro"
-    "--without-pacemaker"
     "--localstatedir=/var"
     "--sysconfdir=/etc"
   ];

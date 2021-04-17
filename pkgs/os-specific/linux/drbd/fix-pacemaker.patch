@@ -1,0 +1,15 @@
+diff --git a/scripts/Makefile.in b/scripts/Makefile.in
+index 114c772b..b816d8c9 100644
+--- a/scripts/Makefile.in
++++ b/scripts/Makefile.in
+@@ -104,8 +104,8 @@ ifeq ($(WITH_PACEMAKER),yes)
+ 	install -m 755 crm-fence-peer.sh $(DESTDIR)$(LIBDIR)
+ 	( set -e ; cd $(DESTDIR)$(LIBDIR) ;\
+ 	  $(LN_S) -f crm-fence-peer.sh crm-unfence-peer.sh ; )
+-	mkdir -p $(DESTDIR)/usr/lib/ocf/resource.d/linbit
+-	install -m 755 drbd.ocf $(DESTDIR)/usr/lib/ocf/resource.d/linbit/drbd
++	mkdir -p $(DESTDIR)${LIBDIR}/../../usr/lib/ocf/resource.d/linbit
++	install -m 755 drbd.ocf $(DESTDIR)${LIBDIR}/../../usr/lib/ocf/resource.d/linbit/drbd
+ endif
+ 
+ install-rgmanager:
