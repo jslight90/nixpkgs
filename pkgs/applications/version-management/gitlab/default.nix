@@ -247,6 +247,10 @@ stdenv.mkDerivation {
       sed -i 's/-ee//' ./VERSION
     ''}
 
+    # Set the revision number for display in GitLab.
+    # Otherwise it defaults to "Unknown" in lib/gitlab.rb
+    echo "${data.rev}" | head -c 11 > ./REVISION
+
     # For reasons I don't understand "bundle exec" ignores the
     # RAILS_ENV causing tests to be executed that fail because we're
     # not installing development and test gems above. Deleting the
